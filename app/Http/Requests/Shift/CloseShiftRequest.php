@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Http\Requests\Shift;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class CloseShiftRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'closing_cash' => ['required', 'numeric', 'min:0'],
+            'notes'        => ['nullable', 'string', 'max:500'],
+        ];
+    }
+}
