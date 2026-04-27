@@ -56,10 +56,12 @@ class UserSeeder extends Seeder
             $user = User::updateOrCreate(['email' => $data['email']], $data);
             
             // Assign roles for both web and sanctum guards to ensure compatibility
-            $user->syncRoles([
-                \Spatie\Permission\Models\Role::where('name', $role)->where('guard_name', 'web')->first(),
-                \Spatie\Permission\Models\Role::where('name', $role)->where('guard_name', 'sanctum')->first()
-            ]);
+            // We set the guard_name on the model instance before assigning each role
+            $user->guard_name = 'web';
+            $user->assignRole($role);
+            
+            $user->guard_name = 'sanctum';
+            $user->assignRole($role);
         }
 
         $this->command->info('Users seeded successfully!');
