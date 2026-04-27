@@ -20,38 +20,38 @@ class MasterDataSeeder extends Seeder
     public function run(): void
     {
         // Units
-        $gram   = Unit::create(['name' => 'Gram',     'symbol' => 'g']);
-        $ml     = Unit::create(['name' => 'Mililiter', 'symbol' => 'ml']);
-        $pcs    = Unit::create(['name' => 'Pcs',       'symbol' => 'pcs']);
-        $sachet = Unit::create(['name' => 'Sachet',    'symbol' => 'sachet']);
+        $gram   = Unit::firstOrCreate(['name' => 'Gram'],     ['symbol' => 'g']);
+        $ml     = Unit::firstOrCreate(['name' => 'Mililiter'], ['symbol' => 'ml']);
+        $pcs    = Unit::firstOrCreate(['name' => 'Pcs'],       ['symbol' => 'pcs']);
+        $sachet = Unit::firstOrCreate(['name' => 'Sachet'],    ['symbol' => 'sachet']);
 
         // Categories
-        $catKopi    = Category::create(['name' => 'Kopi',       'slug' => 'kopi',    'sort_order' => 1]);
-        $catNonKopi = Category::create(['name' => 'Non-Kopi',   'slug' => 'non-kopi', 'sort_order' => 2]);
-        $catMakanan = Category::create(['name' => 'Makanan',    'slug' => 'makanan',  'sort_order' => 3]);
+        $catKopi    = Category::updateOrCreate(['slug' => 'kopi'],    ['name' => 'Kopi',       'sort_order' => 1]);
+        $catNonKopi = Category::updateOrCreate(['slug' => 'non-kopi'], ['name' => 'Non-Kopi',   'sort_order' => 2]);
+        $catMakanan = Category::updateOrCreate(['slug' => 'makanan'],  ['name' => 'Makanan',    'sort_order' => 3]);
 
         // Raw Materials
-        $kopi   = RawMaterial::create(['unit_id' => $gram->id, 'name' => 'Biji Kopi', 'current_stock' => 5000, 'min_stock' => 500, 'cost_per_unit' => 0.15]);
-        $susu   = RawMaterial::create(['unit_id' => $ml->id,   'name' => 'Susu Segar', 'current_stock' => 10000, 'min_stock' => 1000, 'cost_per_unit' => 0.02]);
-        $gula   = RawMaterial::create(['unit_id' => $gram->id, 'name' => 'Gula Pasir', 'current_stock' => 5000, 'min_stock' => 500, 'cost_per_unit' => 0.01]);
-        $teh    = RawMaterial::create(['unit_id' => $gram->id, 'name' => 'Teh Kering', 'current_stock' => 2000, 'min_stock' => 200, 'cost_per_unit' => 0.05]);
-        $mie    = RawMaterial::create(['unit_id' => $pcs->id,  'name' => 'Indomie', 'current_stock' => 100, 'min_stock' => 10, 'cost_per_unit' => 3500]);
-        $telur  = RawMaterial::create(['unit_id' => $pcs->id,  'name' => 'Telur', 'current_stock' => 100, 'min_stock' => 10, 'cost_per_unit' => 2000]);
+        $kopi   = RawMaterial::updateOrCreate(['name' => 'Biji Kopi'], ['unit_id' => $gram->id, 'current_stock' => 5000, 'min_stock' => 500, 'cost_per_unit' => 0.15]);
+        $susu   = RawMaterial::updateOrCreate(['name' => 'Susu Segar'], ['unit_id' => $ml->id,   'current_stock' => 10000, 'min_stock' => 1000, 'cost_per_unit' => 0.02]);
+        $gula   = RawMaterial::updateOrCreate(['name' => 'Gula Pasir'], ['unit_id' => $gram->id, 'current_stock' => 5000, 'min_stock' => 500, 'cost_per_unit' => 0.01]);
+        $teh    = RawMaterial::updateOrCreate(['name' => 'Teh Kering'], ['unit_id' => $gram->id, 'current_stock' => 2000, 'min_stock' => 200, 'cost_per_unit' => 0.05]);
+        $mie    = RawMaterial::updateOrCreate(['name' => 'Indomie'],    ['unit_id' => $pcs->id,  'current_stock' => 100, 'min_stock' => 10, 'cost_per_unit' => 3500]);
+        $telur  = RawMaterial::updateOrCreate(['name' => 'Telur'],      ['unit_id' => $pcs->id,  'current_stock' => 100, 'min_stock' => 10, 'cost_per_unit' => 2000]);
 
         // Modifier Groups
-        $sugarLevel = ModifierGroup::create(['name' => 'Level Gula', 'is_required' => false, 'is_multiple' => false]);
-        $rotiFlavor = ModifierGroup::create(['name' => 'Rasa Roti', 'is_required' => true, 'is_multiple' => false]);
-        $indomieTopping = ModifierGroup::create(['name' => 'Topping Indomie', 'is_required' => false, 'is_multiple' => true]);
+        $sugarLevel = ModifierGroup::updateOrCreate(['name' => 'Level Gula'], ['is_required' => false, 'is_multiple' => false]);
+        $rotiFlavor = ModifierGroup::updateOrCreate(['name' => 'Rasa Roti'], ['is_required' => true, 'is_multiple' => false]);
+        $indomieTopping = ModifierGroup::updateOrCreate(['name' => 'Topping Indomie'], ['is_required' => false, 'is_multiple' => true]);
 
-        Modifier::create(['modifier_group_id' => $sugarLevel->id, 'name' => 'Normal', 'additional_price' => 0, 'sort_order' => 1]);
-        Modifier::create(['modifier_group_id' => $sugarLevel->id, 'name' => 'Less Sugar', 'additional_price' => 0, 'sort_order' => 2]);
-        Modifier::create(['modifier_group_id' => $sugarLevel->id, 'name' => 'No Sugar', 'additional_price' => 0, 'sort_order' => 3]);
+        Modifier::updateOrCreate(['modifier_group_id' => $sugarLevel->id, 'name' => 'Normal'], ['additional_price' => 0, 'sort_order' => 1]);
+        Modifier::updateOrCreate(['modifier_group_id' => $sugarLevel->id, 'name' => 'Less Sugar'], ['additional_price' => 0, 'sort_order' => 2]);
+        Modifier::updateOrCreate(['modifier_group_id' => $sugarLevel->id, 'name' => 'No Sugar'], ['additional_price' => 0, 'sort_order' => 3]);
 
-        Modifier::create(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Coklat', 'additional_price' => 0, 'sort_order' => 1]);
-        Modifier::create(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Tiramisyu', 'additional_price' => 0, 'sort_order' => 2]);
-        Modifier::create(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Srikaya', 'additional_price' => 0, 'sort_order' => 3]);
+        Modifier::updateOrCreate(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Coklat'], ['additional_price' => 0, 'sort_order' => 1]);
+        Modifier::updateOrCreate(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Tiramisyu'], ['additional_price' => 0, 'sort_order' => 2]);
+        Modifier::updateOrCreate(['modifier_group_id' => $rotiFlavor->id, 'name' => 'Srikaya'], ['additional_price' => 0, 'sort_order' => 3]);
 
-        Modifier::create(['modifier_group_id' => $indomieTopping->id, 'name' => 'Tambah Telur', 'additional_price' => 3000, 'sort_order' => 1]);
+        Modifier::updateOrCreate(['modifier_group_id' => $indomieTopping->id, 'name' => 'Tambah Telur'], ['additional_price' => 3000, 'sort_order' => 1]);
 
         // Products Data
         $products = [
@@ -77,10 +77,9 @@ class MasterDataSeeder extends Seeder
         ];
 
         foreach ($products as $p) {
-            $product = Product::create([
+            $product = Product::updateOrCreate(['slug' => Str::slug($p['name'])], [
                 'category_id' => $p['cat']->id,
                 'name'        => $p['name'],
-                'slug'        => Str::slug($p['name']),
                 'price'       => $p['price'],
                 'cost_price'  => $p['price'] * 0.4, // Estimate cost at 40%
                 'is_available'=> true,
@@ -88,20 +87,19 @@ class MasterDataSeeder extends Seeder
 
             // Specific Modifiers
             if (str_contains($p['name'], 'Kopi') || str_contains($p['name'], 'Teh')) {
-                $product->modifierGroups()->attach($sugarLevel->id);
+                $product->modifierGroups()->syncWithoutDetaching([$sugarLevel->id]);
             }
             if ($p['name'] === 'Roti Panggang') {
-                $product->modifierGroups()->attach($rotiFlavor->id);
+                $product->modifierGroups()->syncWithoutDetaching([$rotiFlavor->id]);
             }
             if ($p['name'] === 'Indomie') {
-                $product->modifierGroups()->attach($indomieTopping->id);
+                $product->modifierGroups()->syncWithoutDetaching([$indomieTopping->id]);
             }
         }
 
         // Tables
         foreach (range(1, 15) as $i) {
-            Table::create([
-                'name'     => "Meja {$i}",
+            Table::updateOrCreate(['name' => "Meja {$i}"], [
                 'area'     => $i <= 8 ? 'Indoor' : 'Outdoor',
                 'capacity' => 4,
                 'status'   => 'available',
@@ -111,8 +109,7 @@ class MasterDataSeeder extends Seeder
         }
 
         // Supplier
-        Supplier::create([
-            'name'           => 'Warkop Central Supplier',
+        Supplier::updateOrCreate(['name' => 'Warkop Central Supplier'], [
             'contact_person' => 'Bang Haji',
             'phone'          => '081234567890',
             'email'          => 'supply@koetagadjah.com',
