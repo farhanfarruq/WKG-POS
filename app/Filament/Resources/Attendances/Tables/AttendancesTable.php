@@ -55,6 +55,7 @@ class AttendancesTable
             ->filters([
                 //
             ])
+            ->defaultSort('clock_in', 'desc')
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

@@ -11,7 +11,7 @@ class UserAvatarController extends Controller
     {
         $path = ltrim($path, '/');
 
-        abort_unless($path !== '' && str_starts_with($path, 'avatars/'), 404);
+        abort_unless($path !== '' && str_starts_with($path, 'avatars/') && ! in_array('..', explode('/', $path), true), 404);
 
         foreach (['local', 'public'] as $disk) {
             if (Storage::disk($disk)->exists($path)) {

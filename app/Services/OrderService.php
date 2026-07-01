@@ -143,9 +143,10 @@ class OrderService
     {
         abort_if($order->status === OrderStatus::Completed, 422, 'Order sudah selesai.');
 
-        DB::transaction(function () use ($order, $payments) {
-            $totalPaid = 0;
+        $totalPaid = array_sum(array_map(fn (array $payment) => (float) $payment['amount'], $payments));
+        abort_if($totalPaid < (float) $order->total, 422, 'Jumlah pembayaran kurang dari total order.');
 
+        DB::transaction(function () use ($order, $payments, $totalPaid) {
             foreach ($payments as $paymentData) {
                 $dto = PaymentDTO::fromArray($paymentData, $order->id);
 
@@ -156,8 +157,6 @@ class OrderService
                     'status'           => 'success',
                     'meta'             => $dto->meta ?: null,
                 ]);
-
-                $totalPaid += $dto->amount;
             }
 
             $change = max(0, $totalPaid - $order->total);

@@ -13,8 +13,8 @@ class AttendanceService
         $user = User::where('pin', $pin)->where('is_active', true)->first();
         abort_unless($user, 422, 'PIN tidak valid.');
 
-        $today = Carbon::today()->toDateString();
-        $existing = Attendance::where('user_id', $user->id)->where('date', $today)->first();
+        $today = Carbon::today();
+        $existing = Attendance::where('user_id', $user->id)->whereDate('date', $today)->first();
 
         abort_if($existing && $existing->clock_in, 422, 'Sudah absen masuk hari ini.');
 
@@ -31,7 +31,7 @@ class AttendanceService
                 ? $workShift->start_time->format('H:i:s') 
                 : $workShift->start_time;
             
-            $shiftStartTime = Carbon::parse($today . ' ' . $startTimeStr);
+            $shiftStartTime = Carbon::parse($today->toDateString() . ' ' . $startTimeStr);
             
             if ($now->greaterThan($shiftStartTime)) {
                 $isLate = true;
@@ -39,16 +39,18 @@ class AttendanceService
             }
         }
 
-        $attendance = Attendance::updateOrCreate(
-            ['user_id' => $user->id, 'date' => $today],
-            [
-                'clock_in' => $now, 
-                'clock_in_method' => 'pin',
-                'work_shift_id' => $workShiftId,
-                'is_late' => $isLate,
-                'late_minutes' => $lateMinutes,
-            ]
-        );
+        $attendance = $existing ?? new Attendance([
+            'user_id' => $user->id,
+            'date' => $today->toDateString(),
+        ]);
+
+        $attendance->fill([
+            'clock_in' => $now,
+            'clock_in_method' => 'pin',
+            'work_shift_id' => $workShiftId,
+            'is_late' => $isLate,
+            'late_minutes' => $lateMinutes,
+        ])->save();
 
         return $attendance->fresh(['user', 'workShift']);
     }
@@ -58,8 +60,8 @@ class AttendanceService
         $user = User::where('pin', $pin)->where('is_active', true)->first();
         abort_unless($user, 422, 'PIN tidak valid.');
 
-        $today = Carbon::today()->toDateString();
-        $attendance = Attendance::where('user_id', $user->id)->where('date', $today)->first();
+        $today = Carbon::today();
+        $attendance = Attendance::where('user_id', $user->id)->whereDate('date', $today)->first();
 
         abort_unless($attendance && $attendance->clock_in, 422, 'Belum absen masuk hari ini.');
         abort_if($attendance->clock_out, 422, 'Sudah absen pulang hari ini.');

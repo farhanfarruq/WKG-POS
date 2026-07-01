@@ -11,7 +11,7 @@ class ProductImageController extends Controller
     {
         $path = ltrim($path, '/');
 
-        abort_unless($path !== '' && str_starts_with($path, 'products/'), 404);
+        abort_unless($path !== '' && str_starts_with($path, 'products/') && ! in_array('..', explode('/', $path), true), 404);
 
         foreach (['public', 'local'] as $disk) {
             if (Storage::disk($disk)->exists($path)) {

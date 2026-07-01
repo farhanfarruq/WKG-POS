@@ -41,7 +41,8 @@ class ShiftResource extends Resource
                         'open' => 'Open',
                         'closed' => 'Closed',
                     ]),
-            ]);
+            ])
+            ->defaultSort('opened_at', 'desc');
     }
 
     public static function getPages(): array
